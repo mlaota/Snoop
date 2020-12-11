@@ -3,7 +3,7 @@ import os
 from flask import Flask
 from threading import Thread
 
-app = Flask('VisaBot')
+app = Flask('Snoop Discord Bot')
 
 
 @app.route('/')

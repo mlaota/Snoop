@@ -1,3 +1,4 @@
+import asyncio
 import datetime as dt
 import discord as dc
 import logging
@@ -41,10 +42,12 @@ class SnoopClient(dc.Client):
         """Infinitely "patrols" this clients' guilds. A patrol includes a search
         for suspects and the disconnection of suspects whose probationary period
         has ended."""
+        TIC_SECONDS = 1
         while True:
             await self.wait_until_ready()
             self._find_suspects()
             await self._examine_suspects()
+            await asyncio.sleep(TIC_SECONDS)
 
     def _find_suspects(self):
         """Iterates the members of this clients' guilds, searching for suspects.
