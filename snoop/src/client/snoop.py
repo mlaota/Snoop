@@ -18,7 +18,7 @@ class SnoopClient(dc.Client):
         self.command_prefix = command_prefix
         self.announcement_channel = announcement_channel
 
-        self._probationary_period = dt.timedelta(minutes=5)
+        self._probationary_period = dt.timedelta(seconds=10)
         self._suspects: Dict[dc.Member, dt.datetime] = {}
 
     # Override.
