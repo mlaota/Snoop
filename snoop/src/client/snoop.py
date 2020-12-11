@@ -15,7 +15,6 @@ class SnoopClient(dc.Client):
     and removed from the voice channel.
     """
 
-    TIC_SECONDS = 0.1
 
     def __init__(self, command_prefix: str, announcement_channel='commands',
                  **options):
@@ -35,7 +34,9 @@ class SnoopClient(dc.Client):
     async def on_message(self, message: dc.Message):
         if message.author == self.user:
             return
-        await message.channel.send('*woof woof*')
+
+        if self.user in message.mentions:
+            await message.channel.send('*woof woof*')
 
     def set_probationary_period(self, period: dt.timedelta):
         if isinstance(period, dt.timedelta):
@@ -52,7 +53,7 @@ class SnoopClient(dc.Client):
             await self.wait_until_ready()
             self._find_suspects()
             await self._examine_all_suspects()
-            await asyncio.sleep(self.TIC_SECONDS)
+            await asyncio.sleep(0)
 
     def _find_suspects(self):
         """Iterates the members of this clients' guilds, searching for suspects.
@@ -123,7 +124,7 @@ class SnoopClient(dc.Client):
         almost_end = probation_end - dt.timedelta(minutes=2)
 
         # For datetime equality.
-        allowance = dt.timedelta(seconds=self.TIC_SECONDS)
+        allowance = dt.timedelta(seconds=0.1)
 
         return almost_end - allowance <= now <= almost_end + allowance
 
