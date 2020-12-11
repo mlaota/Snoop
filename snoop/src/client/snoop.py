@@ -15,7 +15,6 @@ class SnoopClient(dc.Client):
     and removed from the voice channel.
     """
 
-
     def __init__(self, command_prefix: str, announcement_channel='commands',
                  **options):
         super().__init__(**options)
@@ -49,11 +48,12 @@ class SnoopClient(dc.Client):
         A patrol includes a search for suspects and the disconnection of
         suspects whose probationary period has ended.
         """
+        TIC_SECONDS = 0.1
         while True:
             await self.wait_until_ready()
             self._find_suspects()
             await self._examine_all_suspects()
-            await asyncio.sleep(0)
+            await asyncio.sleep(TIC_SECONDS)
 
     def _find_suspects(self):
         """Iterates the members of this clients' guilds, searching for suspects.
