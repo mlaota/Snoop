@@ -1,1 +1,1 @@
-web: python -m visabot
+web: python -m snoop
