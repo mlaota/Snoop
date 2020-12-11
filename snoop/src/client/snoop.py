@@ -37,14 +37,14 @@ class SnoopClient(dc.Client):
             logging.info(f'Probationary period set to {period}')
             self._probationary_period = period
 
-    def _patrol(self):
+    async def _patrol(self):
         """Infinitely "patrols" this clients' guilds. A patrol includes a search
         for suspects and the disconnection of suspects whose probationary period
         has ended."""
         while True:
             await self.wait_until_ready()
             self._find_suspects()
-            self._examine_suspects()
+            await self._examine_suspects()
 
     def _find_suspects(self):
         """Iterates the members of this clients' guilds, searching for suspects.
@@ -61,7 +61,7 @@ class SnoopClient(dc.Client):
     def _is_suspicious(self, member: dc.Member) -> bool:
         return member.voice.self_deaf and member.voice.self_stream
 
-    def _examine_suspects(self):
+    async def _examine_suspects(self):
         """Examines and updates the state of known suspects.
 
         A suspect is removed from the suspect list if they have undeafened
@@ -73,7 +73,7 @@ class SnoopClient(dc.Client):
             if not member.voice.self_deaf:
                 del self._suspects[member]
             elif self._probation_period_ended(member):
-                self._remove_suspect(member)
+                await self._remove_suspect(member)
 
     def _probation_period_ended(self, member: dc.Member) -> bool:
         """Checks if the given member's probationary period has ended. If the
@@ -86,7 +86,7 @@ class SnoopClient(dc.Client):
 
         return dt.datetime.now() <= probation_end
 
-    def _remove_suspect(self, member: dc.Member):
+    async def _remove_suspect(self, member: dc.Member):
         """Disconnects the Member from the voice channel they are in."""
         await member.move_to(None)
 
