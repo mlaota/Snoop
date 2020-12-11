@@ -53,7 +53,7 @@ class SnoopClient(dc.Client):
         ``self._suspects`` and their probationary period begins.
         """
         for guild in self.guilds:
-            for voice_channel in guild:
+            for voice_channel in guild.voice_channels:
                 for member in voice_channel.members:
                     if self._is_suspicious(member):
                         self._suspects[member] = dt.datetime.now()
@@ -89,5 +89,6 @@ class SnoopClient(dc.Client):
     async def _remove_suspect(self, member: dc.Member):
         """Disconnects the Member from the voice channel they are in."""
         await member.move_to(None)
+        del self._suspects[member]
 
 
